@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreamscape — Where Dreams Become Cinema (Sora 3)</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Background Layers -->
+    <div class="stars"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Dream<span>scape</span></div>
+        <ul>
+            <li><a href="#create">Create</a></li>
+            <li><a href="#featured">Featured</a></li>
+            <li><a href="#how">Process</a></li>
+        </ul>
+    </nav>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="eyebrow">Neural Visualizer v5.0 — Powered by Sora 3</div>
+            <h1>Witness your <em>subconscious.</em></h1>
+            <p>
+                Experience the world's most advanced story-to-video engine. 
+                Sora 3 delivers unparalleled temporal consistency and high-bitrate neural rendering.
+            </p>
+            <div class="hero-btns">
+                <a href="#create" class="btn-primary">Begin Session</a>
+                <a href="#featured" class="btn-ghost">Explore Archive</a>
+            </div>
+        </section>
+
+        <!-- Neural Interface (DreamForm) -->
+        <section id="create">
+            <div class="section-label">Neural Interface</div>
+            <h2 class="section-title">Enter the <em>void.</em></h2>
+            <div class="divider"></div>
+
+            <div class="dream-form-card">
+                <textarea class="dream-textarea" placeholder="Describe the texture of your subconscious... A neon forest at midnight, a floating city of glass, or perhaps a conversation with a shadow."></textarea>
+
+                <div class="mode-toggle">
+                    <button class="mode-btn active" data-mode="images">Snapshot <span class="badge badge-cheap">Free</span></button>
+                    <button class="mode-btn" data-mode="video">Sora 3 Cinema <span class="badge badge-premium">Premium</span></button>
+                    <button class="mode-btn" data-mode="story">Story Mode <span class="badge badge-premium">Alpha</span></button>
+                </div>
+
+                <div class="mode-info show" data-mode="images">
+                    <h4>SNAPSHOT RENDERING</h4>
+                    <p>4x High-fidelity neural projections. Ideal for environmental study.</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Stable Diff XL</span>
+                        <span class="tech-tag">1024x1024</span>
+                    </div>
+                </div>
+
+                <div class="mode-info" data-mode="video">
+                    <h4>SORA 3 CINEMATIC SEQUENCE</h4>
+                    <p>12-second temporal rendering with spatial audio synthesis and high-bitrate output.</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Sora 3 Alpha</span>
+                        <span class="tech-tag">60FPS</span>
+                        <span class="tech-tag">Neural Audio v2</span>
+                    </div>
+                </div>
+
+                <div class="mode-info" data-mode="story">
+                    <h4>SORA 3 STORYBOARD ENGINE</h4>
+                    <p>Generate complex multi-scene narratives from simple story prompts. Persistent character consistency.</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Sora 3 Narrative</span>
+                        <span class="tech-tag">Multi-Scene</span>
+                        <span class="tech-tag">Long Form</span>
+                    </div>
+                </div>
+
+                <div class="generate-area">
+                    <button id="generateBtn" class="btn-primary">
+                        <span class="btn-text">Initialize Rendering</span>
+                        <div class="spinner"><div class="spin-ring"></div></div>
+                    </button>
+                </div>
+
+                <div id="outputArea">
+                    <div class="output-header">
+                        <h3>Neural Output</h3>
+                        <span>LATENCY: 1.8s</span>
+                    </div>
+                    <div class="frames-grid">
+                        <div class="dream-frame">👁️<div class="frame-label">FRAME_001</div></div>
+                        <div class="dream-frame">👁️<div class="frame-label">FRAME_002</div></div>
+                        <div class="dream-frame">👁️<div class="frame-label">FRAME_003</div></div>
+                        <div class="dream-frame">👁️<div class="frame-label">FRAME_004</div></div>
+                    </div>
+                    <div class="output-actions">
+                        <button class="btn-primary" style="padding: 12px 24px;">Archive to Vault</button>
+                        <button class="btn-ghost" style="padding: 12px 24px;">Refine Prompt</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery (Archive) -->
+        <section id="featured">
+            <div class="section-label">Gallery</div>
+            <h2 class="section-title">The <em>Archive.</em></h2>
+            <div class="divider"></div>
+            <div class="dreams-grid">
+                <div class="dream-card featured-card">
+                    <div class="card-thumb">🏛️<div class="card-overlay"></div><div class="card-rank">RANK_01</div><div class="card-type-badge type-video">SEQUENCE</div></div>
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 class="card-title" style="margin: 0;">Liquid Neon Cathedral</h4>
+                            <span style="font-size: 9px; color: var(--glow); font-family: 'Space Mono'; letter-spacing: 0.1em;">SORA 3 ALPHA</span>
+                        </div>
+                        <p class="card-excerpt">A visual reconstruction of the subconscious manifested through high-fidelity neural rendering.</p>
+                        <div class="card-meta"><span class="card-author">BY User_882</span><div class="card-votes"><button class="vote-btn">▲ 4280</button></div></div>
+                    </div>
+                </div>
+                <div class="dream-card">
+                    <div class="card-thumb">🏜️<div class="card-overlay"></div><div class="card-rank">RANK_02</div><div class="card-type-badge type-images">SNAPSHOT</div></div>
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 class="card-title" style="margin: 0;">Whispering Desert</h4>
+                            <span style="font-size: 9px; color: var(--glow); font-family: 'Space Mono'; letter-spacing: 0.1em;">NEURAL SNAPSHOT</span>
+                        </div>
+                        <p class="card-excerpt">A visual reconstruction of the subconscious manifested through high-fidelity neural rendering.</p>
+                        <div class="card-meta"><span class="card-author">BY Oracle_X</span><div class="card-votes"><button class="vote-btn">▲ 3912</button></div></div>
+                    </div>
+                </div>
+                <div class="dream-card">
+                    <div class="card-thumb">🌸<div class="card-overlay"></div><div class="card-rank">RANK_03</div><div class="card-type-badge type-images">SNAPSHOT</div></div>
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 class="card-title" style="margin: 0;">Mechanical Orchids</h4>
+                            <span style="font-size: 9px; color: var(--glow); font-family: 'Space Mono'; letter-spacing: 0.1em;">NEURAL SNAPSHOT</span>
+                        </div>
+                        <p class="card-excerpt">A visual reconstruction of the subconscious manifested through high-fidelity neural rendering.</p>
+                        <div class="card-meta"><span class="card-author">BY CyberFlorist</span><div class="card-votes"><button class="vote-btn">▲ 3450</button></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Protocol (Pipeline) -->
+        <section id="how">
+            <div class="section-label">Protocol</div>
+            <h2 class="section-title">The <em>Pipeline.</em></h2>
+            <div class="divider"></div>
+            <div class="steps">
+                <div class="step"><div class="step-num">01</div><div class="step-icon">📡</div><h3>Neural Capture</h3><p>Direct neural link or high-latency textual transcription of subconscious imagery.</p></div>
+                <div class="step"><div class="step-num">02</div><div class="step-icon">⚙️</div><h3>Processing</h3><p>Vortical diffusion models reconstruct spatial data into rendered frames.</p></div>
+                <div class="step"><div class="step-num">03</div><div class="step-icon">🎭</div><h3>Synthesis</h3><p>Temporal consistency checks and neural audio integration for cinematic depth.</p></div>
+                <div class="step"><div class="step-num">04</div><div class="step-icon">🌌</div><h3>Projection</h3><p>Final high-fidelity output delivered to the user's secure digital vault.</p></div>
+            </div>
+        </section>
+
+        <!-- Capabilities (Comparison) -->
+        <section id="compare">
+            <div class="section-label">Capabilities</div>
+            <h2 class="section-title">Choose your <em>Depth.</em></h2>
+            <div class="divider"></div>
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th class="col-images">Snapshot</th>
+                        <th class="col-video">Sora 3 Cinema</th>
+                        <th class="col-story" style="color: var(--pulse);">Story Mode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Rendering Resolution</td><td>1024x1024px</td><td>4K UHD</td><td style="color: var(--pulse);">8K Narrative</td></tr>
+                    <tr><td>Neural Fidelity</td><td>Standard</td><td>Extreme</td><td style="color: var(--pulse);">Absolute</td></tr>
+                    <tr><td>Temporal Motion</td><td>None</td><td>Fluid 60fps</td><td style="color: var(--pulse);">Long-form 60fps</td></tr>
+                    <tr><td>Spatial Audio</td><td>❌</td><td>✅ v2</td><td style="color: var(--pulse);">✅ Immersive</td></tr>
+                    <tr><td>Character Consistency</td><td>N/A</td><td>High</td><td style="color: var(--pulse);">Persistent</td></tr>
+                    <tr><td>Secure Vault Storage</td><td>Limited</td><td>Priority</td><td style="color: var(--pulse);">Unlimited</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="logo">Dream<span>scape</span></div>
+        <p>© 2026 Dreamscape Research Group. All rights reserved.</p>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
