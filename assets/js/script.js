@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const generateBtn = document.getElementById('generateBtn');
     const outputArea = document.getElementById('outputArea');
+    const btnText = generateBtn ? generateBtn.querySelector('.btn-text') : null;
     
     if (generateBtn) {
         generateBtn.addEventListener('click', async () => {
@@ -87,41 +88,96 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            if (!VEO_API_KEY) {
+                alert('API Key not found. Please ensure VEO_API_KEY is set in your .env file.');
+                return;
+            }
+
             generateBtn.classList.add('loading');
             generateBtn.disabled = true;
+            if (btnText) btnText.textContent = 'Initializing Neural Link...';
             
             try {
-                // Simulate actual API processing delay
-                await new Promise(resolve => setTimeout(resolve, 2500));
+                // 1. Send initial request
+                const baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+                const modelId = 'veo-3.1-generate-preview'; // or veo-3.1-fast-generate-preview
+                const response = await fetch(`${baseUrl}/models/${modelId}:predictLongRunning?key=${VEO_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        instances: [{ prompt: dreamText }],
+                        parameters: {
+                            aspectRatio: "16:9",
+                            resolution: "1080p",
+                            durationSeconds: "6",
+                            enhancePrompt: true
+                        }
+                    })
+                });
 
-                /* 
-                // Actual Veo API Call Example:
-                if (VEO_API_KEY) {
-                    const response = await fetch('https://videogen.googleapis.com/v1/projects/YOUR_PROJECT/locations/us-central1/publishers/google/models/veo-3-1:predict', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${VEO_API_KEY}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ instances: [{ prompt: dreamText }] })
-                    });
-                    const data = await response.json();
-                    console.log('Real API Response:', data);
+                const initialData = await response.json();
+                
+                if (initialData.error) {
+                    throw new Error(initialData.error.message || 'API Error');
                 }
-                */
 
+                const operationName = initialData.name;
+                console.log('Operation started:', operationName);
+                if (btnText) btnText.textContent = 'Synthesizing Subconscious...';
+
+                // 2. Polling Logic
+                let isDone = false;
+                let finalResponse = null;
+
+                while (!isDone) {
+                    await new Promise(resolve => setTimeout(resolve, 5000)); // Poll every 5s
+                    
+                    const pollRes = await fetch(`${baseUrl}/${operationName}?key=${VEO_API_KEY}`);
+                    const pollData = await pollRes.json();
+                    
+                    if (pollData.error) {
+                        throw new Error(pollData.error.message || 'Polling Error');
+                    }
+
+                    if (pollData.done) {
+                        isDone = true;
+                        finalResponse = pollData.response;
+                    } else {
+                        console.log('Rendering in progress...');
+                    }
+                }
+
+                // 3. Render Result
                 generateBtn.classList.remove('loading');
                 generateBtn.disabled = false;
+                if (btnText) btnText.textContent = 'Session Complete';
+                
                 outputArea.classList.add('visible');
                 outputArea.scrollIntoView({ behavior: 'smooth' });
-                
-                console.log(`Successfully processed ${activeMode} request with Veo 3.1. Key used: ${VEO_API_KEY ? 'YES' : 'NO'}`);
+
+                const videoUri = finalResponse.generatedVideos?.[0]?.video?.uri;
+                if (videoUri) {
+                    const framesGrid = document.querySelector('.frames-grid');
+                    if (framesGrid) {
+                        framesGrid.innerHTML = `
+                            <div class="video-container" style="grid-column: span 4; width: 100%; aspect-ratio: 16/9; background: #000; border: 1px solid var(--glow); overflow: hidden; position: relative;">
+                                <video src="${videoUri}" controls autoplay loop style="width: 100%; height: 100%; object-fit: cover;"></video>
+                                <div class="frame-label" style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">VEO_RENDER_V3.1</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                console.log(`Successfully processed ${activeMode} request with Veo 3.1.`);
 
             } catch (error) {
                 console.error('Generation failed:', error);
                 generateBtn.classList.remove('loading');
                 generateBtn.disabled = false;
-                alert('An error occurred during neural rendering. Please try again.');
+                if (btnText) btnText.textContent = 'Initialization Failed';
+                alert(`Neural rendering failed: ${error.message}`);
             }
         });
     }
