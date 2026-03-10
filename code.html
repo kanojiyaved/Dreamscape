@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dreamscape — Where Dreams Become Cinema</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #04020f;
+    --deep: #0a0520;
+    --murk: #130a2e;
+    --glow: #7b4fff;
+    --pulse: #c084fc;
+    --shimmer: #e2c4ff;
+    --gold: #f0c060;
+    --mist: rgba(123,79,255,0.12);
+    --fog: rgba(192,132,252,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--shimmer);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--pulse);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(192,132,252,0.5);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+  }
+
+  /* Stars background */
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--d, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--min-op, 0.1); transform: scale(1); }
+    50% { opacity: var(--max-op, 0.8); transform: scale(1.3); }
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 60px;
+    background: linear-gradient(to bottom, rgba(4,2,15,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(2px);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--shimmer);
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--pulse); }
+  nav ul {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  nav ul a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(226,196,255,0.5);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  nav ul a:hover { color: var(--pulse); }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    z-index: 1;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(123,79,255,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  }
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--glow);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.3s;
+  }
+  .hero h1 {
+    font-size: clamp(52px, 10vw, 110px);
+    font-weight: 300;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.6s;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--pulse);
+    display: block;
+  }
+  .hero p {
+    font-size: 20px;
+    font-weight: 300;
+    color: rgba(226,196,255,0.6);
+    max-width: 480px;
+    line-height: 1.7;
+    margin: 28px auto 48px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.9s;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1.2s;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Buttons */
+  .btn-primary {
+    padding: 16px 40px;
+    background: var(--glow);
+    color: white;
+    border: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .btn-primary:hover {
+    background: var(--pulse);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(123,79,255,0.5);
+  }
+  .btn-ghost {
+    padding: 16px 40px;
+    background: transparent;
+    color: var(--shimmer);
+    border: 1px solid rgba(226,196,255,0.25);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.3s, color 0.3s, transform 0.2s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .btn-ghost:hover {
+    border-color: var(--pulse);
+    color: var(--pulse);
+    transform: translateY(-2px);
+  }
+
+  /* Section titles */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--glow);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 300;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .section-title em { font-style: italic; color: var(--pulse); }
+
+  /* Divider */
+  .divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, var(--glow), transparent);
+    margin: 0 auto 60px;
+  }
+
+  /* ── DREAM SUBMISSION SECTION ── */
+  #create {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .dream-form-card {
+    background: linear-gradient(135deg, rgba(19,10,46,0.9) 0%, rgba(10,5,32,0.95) 100%);
+    border: 1px solid rgba(123,79,255,0.25);
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dream-form-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20%; right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--glow), var(--pulse), transparent);
+  }
+
+  .dream-textarea {
+    width: 100%;
+    min-height: 160px;
+    background: rgba(4,2,15,0.7);
+    border: 1px solid rgba(123,79,255,0.2);
+    color: var(--shimmer);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    padding: 24px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 24px;
+  }
+  .dream-textarea:focus {
+    border-color: var(--glow);
+    box-shadow: 0 0 30px rgba(123,79,255,0.15);
+  }
+  .dream-textarea::placeholder { color: rgba(226,196,255,0.25); font-style: italic; }
+
+  /* Visual Mode Toggle */
+  .mode-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border: 1px solid rgba(123,79,255,0.25);
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    color: rgba(226,196,255,0.4);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s;
+    border-right: 1px solid rgba(123,79,255,0.25);
+    position: relative;
+  }
+  .mode-btn:last-child { border-right: none; }
+  .mode-btn.active {
+    background: rgba(123,79,255,0.2);
+    color: var(--pulse);
+  }
+  .mode-btn .badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 8px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  .badge-cheap { background: rgba(80,200,120,0.2); color: #80ffa0; border: 1px solid rgba(80,200,120,0.3); }
+  .badge-premium { background: rgba(240,192,96,0.2); color: var(--gold); border: 1px solid rgba(240,192,96,0.3); }
+
+  /* Mode info panels */
+  .mode-info {
+    display: none;
+    text-align: left;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: rgba(4,2,15,0.5);
+    border-left: 2px solid var(--glow);
+  }
+  .mode-info.active { display: block; }
+  .mode-info h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--pulse);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+  .mode-info p {
+    font-size: 15px;
+    color: rgba(226,196,255,0.6);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .tech-tag {
+    padding: 4px 12px;
+    background: rgba(123,79,255,0.1);
+    border: 1px solid rgba(123,79,255,0.25);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--glow);
+    letter-spacing: 0.05em;
+  }
+
+  /* Generate animation */
+  .generate-area {
+    text-align: center;
+  }
+  #generateBtn {
+    position: relative;
+    overflow: hidden;
+  }
+  #generateBtn .btn-text { transition: opacity 0.3s; }
+  #generateBtn.loading .btn-text { opacity: 0; }
+  #generateBtn .spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  #generateBtn.loading .spinner { opacity: 1; }
+  .spin-ring {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Output preview */
+  #outputArea {
+    display: none;
+    margin-top: 40px;
+    text-align: left;
+  }
+  #outputArea.visible { display: block; }
+  .output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(123,79,255,0.2);
+  }
+  .output-header h3 {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--shimmer);
+  }
+  .output-header span {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--glow);
+    letter-spacing: 0.1em;
+  }
+  .frames-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .dream-frame {
+    aspect-ratio: 9/16;
+    background: linear-gradient(135deg, var(--murk), var(--deep));
+    border: 1px solid rgba(123,79,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    position: relative;
+    overflow: hidden;
+    animation: shimmerFrame 2s ease infinite;
+  }
+  .dream-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(123,79,255,0.08) 100%);
+  }
+  @keyframes shimmerFrame {
+    0%, 100% { border-color: rgba(123,79,255,0.2); }
+    50% { border-color: rgba(192,132,252,0.4); }
+  }
+  .frame-label {
+    position: absolute;
+    bottom: 8px; left: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(226,196,255,0.4);
+    letter-spacing: 0.05em;
+  }
+  .output-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ── FEATURED DREAMS ── */
+  #featured {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .dreams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 60px;
+    text-align: left;
+  }
+
+  .dream-card {
+    background: linear-gradient(135deg, rgba(19,10,46,0.8), rgba(10,5,32,0.9));
+    border: 1px solid rgba(123,79,255,0.15);
+    overflow: hidden;
+    transition: transform 0.4s ease, border-color 0.4s, box-shadow 0.4s;
+    cursor: none;
+    position: relative;
+  }
+  .dream-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(192,132,252,0.4);
+    box-shadow: 0 20px 60px rgba(123,79,255,0.2);
+  }
+  .dream-card.featured-card {
+    grid-column: span 2;
+  }
+  .card-thumb {
+    aspect-ratio: 16/10;
+    background: linear-gradient(135deg, var(--murk), var(--deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .featured-card .card-thumb { aspect-ratio: 16/7; font-size: 72px; }
+  .card-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    filter: blur(0);
+    transition: filter 0.4s;
+  }
+  .dream-card:hover .card-thumb::before { filter: blur(2px); }
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(4,2,15,0.8) 0%, transparent 60%);
+  }
+  .card-rank {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    background: rgba(4,2,15,0.8);
+    border: 1px solid rgba(192,132,252,0.3);
+    color: var(--pulse);
+  }
+  .card-type-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+  }
+  .type-images { background: rgba(80,200,120,0.15); color: #80ffa0; border: 1px solid rgba(80,200,120,0.3); }
+  .type-video { background: rgba(240,192,96,0.15); color: var(--gold); border: 1px solid rgba(240,192,96,0.3); }
+  .card-body { padding: 20px; }
+  .card-title {
+    font-size: 20px;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 8px;
+    color: var(--shimmer);
+  }
+  .card-excerpt {
+    font-size: 14px;
+    color: rgba(226,196,255,0.45);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-author {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: rgba(226,196,255,0.35);
+    letter-spacing: 0.05em;
+  }
+  .card-votes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid rgba(123,79,255,0.25);
+    color: rgba(226,196,255,0.5);
+    padding: 6px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .vote-btn:hover, .vote-btn.voted {
+    border-color: var(--glow);
+    color: var(--pulse);
+    background: rgba(123,79,255,0.1);
+  }
+  .vote-btn.voted { pointer-events: none; }
+
+  /* ── HOW IT WORKS ── */
+  #how {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .step {
+    background: linear-gradient(135deg, rgba(19,10,46,0.6), rgba(10,5,32,0.8));
+    border: 1px solid rgba(123,79,255,0.12);
+    padding: 40px 28px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s;
+  }
+  .step:hover { border-color: rgba(192,132,252,0.3); }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    font-weight: 300;
+    color: rgba(123,79,255,0.1);
+    line-height: 1;
+    position: absolute;
+    top: 12px; right: 16px;
+  }
+  .step-icon { font-size: 28px; margin-bottom: 20px; }
+  .step h3 {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--shimmer);
+    margin-bottom: 10px;
+  }
+  .step p {
+    font-size: 14px;
+    color: rgba(226,196,255,0.45);
+    line-height: 1.7;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  #compare {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 48px;
+    text-align: left;
+  }
+  .compare-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(123,79,255,0.2);
+  }
+  .compare-table th:first-child { color: rgba(226,196,255,0.4); }
+  .compare-table th.col-images { color: #80ffa0; }
+  .compare-table th.col-video { color: var(--gold); }
+  .compare-table td {
+    padding: 16px 24px;
+    font-size: 15px;
+    color: rgba(226,196,255,0.65);
+    border-bottom: 1px solid rgba(123,79,255,0.08);
+    vertical-align: middle;
+  }
+  .compare-table td:first-child {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(226,196,255,0.35);
+    letter-spacing: 0.05em;
+  }
+  .compare-table tr:hover td { background: rgba(123,79,255,0.04); }
+  .check { color: #80ffa0; font-size: 18px; }
+  .cross { color: rgba(226,196,255,0.2); font-size: 18px; }
+  .neutral { color: var(--gold); }
+
+  /* ── LEADERBOARD ── */
+  #leaderboard {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .lb-list { margin-top: 48px; }
+  .lb-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 28px;
+    background: linear-gradient(90deg, rgba(19,10,46,0.7), rgba(10,5,32,0.5));
+    border: 1px solid rgba(123,79,255,0.12);
+    margin-bottom: 8px;
+    transition: all 0.3s;
+    cursor: none;
+    text-align: left;
+  }
+  .lb-item:hover {
+    border-color: rgba(192,132,252,0.3);
+    background: linear-gradient(90deg, rgba(19,10,46,0.9), rgba(10,5,32,0.7));
+    transform: translateX(4px);
+  }
+  .lb-item.gold-rank { border-color: rgba(240,192,96,0.3); }
+  .lb-pos {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    width: 48px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .lb-pos.p1 { color: var(--gold); }
+  .lb-pos.p2 { color: rgba(200,200,220,0.8); }
+  .lb-pos.p3 { color: rgba(180,120,60,0.8); }
+  .lb-pos.p4, .lb-pos.p5 { color: rgba(226,196,255,0.3); }
+  .lb-thumb {
+    width: 60px; height: 40px;
+    background: linear-gradient(135deg, var(--murk), var(--deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    border: 1px solid rgba(123,79,255,0.15);
+  }
+  .lb-info { flex: 1; }
+  .lb-title {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--shimmer);
+    margin-bottom: 4px;
+  }
+  .lb-author {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: rgba(226,196,255,0.3);
+    letter-spacing: 0.05em;
+  }
+  .lb-score {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .lb-votes {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    color: var(--pulse);
+    display: block;
+  }
+  .lb-votes-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(226,196,255,0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 60px 60px 40px;
+    border-top: 1px solid rgba(123,79,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 20px;
+  }
+  footer .logo { font-size: 18px; }
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: rgba(226,196,255,0.2);
+    letter-spacing: 0.1em;
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: drift var(--drift-d, 20s) ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translate(0, 0); }
+    to { transform: translate(var(--dx, 40px), var(--dy, 30px)); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    nav ul { display: none; }
+    .dream-form-card { padding: 32px 24px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .dream-card.featured-card { grid-column: span 1; }
+    footer { flex-direction: column; text-align: center; }
+    .frames-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Background stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Floating orbs -->
+<div class="orb" style="width:500px;height:500px;background:rgba(123,79,255,0.06);top:-100px;left:-100px;--drift-d:25s;--dx:60px;--dy:40px;"></div>
+<div class="orb" style="width:400px;height:400px;background:rgba(192,132,252,0.05);bottom:0;right:0;--drift-d:20s;--dx:-50px;--dy:-30px;"></div>
+<div class="orb" style="width:300px;height:300px;background:rgba(123,79,255,0.04);top:50%;left:60%;--drift-d:30s;--dx:-40px;--dy:50px;"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Dream<span>scape</span></div>
+  <ul>
+    <li><a href="#create">Create</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#leaderboard">Rankings</a></li>
+    <li><a href="#how">How It Works</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">✦ AI Dream Cinema ✦</div>
+  <h1>Your Dreams<em>On Screen</em></h1>
+  <p>Describe your dream. Watch AI transform it into a short film. The most vivid visions rise to the top.</p>
+  <div class="hero-btns">
+    <a href="#create" class="btn-primary">Submit Your Dream</a>
+    <a href="#featured" class="btn-ghost">Watch Dreams</a>
+  </div>
+</section>
+
+<!-- CREATE SECTION -->
+<section id="create">
+  <div class="section-label">✦ Begin Here</div>
+  <h2 class="section-title">Describe Your <em>Dream</em></h2>
+  <div class="divider"></div>
+
+  <div class="dream-form-card">
+    <textarea class="dream-textarea" id="dreamInput" placeholder="I was standing in a city made of glass and moonlight, but the streets kept shifting beneath me… every time I turned a corner, the sky changed colour…"></textarea>
+
+    <!-- Visual mode toggle -->
+    <div style="margin-bottom:12px;text-align:left;">
+      <div class="section-label" style="margin-bottom:8px;">Choose Your Visual Mode</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('images')" id="modeImages">
+        🖼 AI Images <span class="badge badge-cheap">FREE</span>
+      </button>
+      <button class="mode-btn" onclick="setMode('video')" id="modeVideo">
+        🎬 AI Video <span class="badge badge-premium">PREMIUM</span>
+      </button>
+    </div>
+
+    <!-- Mode info: Images -->
+    <div class="mode-info active" id="infoImages">
+      <h4>AI Image Slideshow — How It Works</h4>
+      <p>Your dream description is broken into 4–6 key scenes. Each scene is sent to an AI image generator which creates a still frame. These frames are assembled into an animated slideshow with dreamy crossfade transitions — giving you a cinematic "dream reel" in under 30 seconds.</p>
+      <p><strong style="color:var(--shimmer)">Cost:</strong> ~$0.02–0.08 per dream. Free tier available.</p>
+      <div class="tech-list">
+        <span class="tech-tag">Stable Diffusion XL</span>
+        <span class="tech-tag">DALL-E 3</span>
+        <span class="tech-tag">Replicate API</span>
+        <span class="tech-tag">CSS Slideshow</span>
+      </div>
+    </div>
+
+    <!-- Mode info: Video -->
+    <div class="mode-info" id="infoVideo">
+      <h4>AI Video Generation — How It Works</h4>
+      <p>Your dream is processed into a cinematic prompt and sent to an AI video model. A 5–15 second video clip is generated with real motion, atmosphere, and lighting that matches your dream's mood. Results can be stunning — and surreal in exactly the right way.</p>
+      <p><strong style="color:var(--shimmer)">Cost:</strong> ~$0.25–1.50 per dream. Credits required.</p>
+      <div class="tech-list">
+        <span class="tech-tag">Runway ML Gen-3</span>
+        <span class="tech-tag">Kling AI</span>
+        <span class="tech-tag">Pika Labs</span>
+        <span class="tech-tag">Sora (OpenAI)</span>
+      </div>
+    </div>
+
+    <div class="generate-area">
+      <button class="btn-primary" id="generateBtn" onclick="generateDream()" style="width:100%;max-width:320px;padding:18px;">
+        <span class="btn-text">✦ Generate Dream</span>
+        <span class="spinner"><span class="spin-ring"></span></span>
+      </button>
+    </div>
+
+    <!-- Output area -->
+    <div id="outputArea">
+      <div class="output-header">
+        <h3 id="outputTitle">Your Dream — <em>Untitled</em></h3>
+        <span id="outputMode">AI IMAGES · 4 FRAMES</span>
+      </div>
+      <div class="frames-grid" id="framesGrid"></div>
+      <div class="output-actions">
+        <button class="btn-primary" onclick="submitToGallery()">✦ Submit to Gallery</button>
+        <button class="btn-ghost" onclick="regenerate()">↺ Regenerate</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label">✦ The Process</div>
+  <h2 class="section-title">From Sleep to <em>Cinema</em></h2>
+  <div class="divider"></div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-icon">🌙</div>
+      <h3>Describe Your Dream</h3>
+      <p>Write what you saw, felt, and experienced. The more vivid your description, the more accurate the visuals.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-icon">⚡</div>
+      <h3>AI Generates Visuals</h3>
+      <p>Choose image slideshow (fast & free) or full video generation (cinematic & premium). Both powered by state-of-the-art AI.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-icon">🎬</div>
+      <h3>Preview & Submit</h3>
+      <p>Review your dream film. If you love it, submit it to the public gallery for the community to see.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-icon">🏆</div>
+      <h3>Rise to the Top</h3>
+      <p>The community votes on realism and atmosphere. The most dreamlike visions get featured on the front page.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="compare">
+  <div class="section-label">✦ Visual Modes</div>
+  <h2 class="section-title">Images vs <em>Video</em></h2>
+  <div class="divider"></div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="col-images">🖼 AI Images</th>
+        <th class="col-video">🎬 AI Video</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>GENERATION TIME</td><td>~15–30 seconds</td><td>~60–180 seconds</td></tr>
+      <tr><td>COST PER DREAM</td><td class="check">Free / ~$0.05</td><td class="neutral">~$0.25–$1.50</td></tr>
+      <tr><td>VISUAL QUALITY</td><td class="neutral">High (still frames)</td><td class="check">Cinematic motion</td></tr>
+      <tr><td>REALISM SCORE</td><td class="neutral">Good</td><td class="check">Excellent</td></tr>
+      <tr><td>COMMUNITY VOTING</td><td class="check">✓</td><td class="check">✓</td></tr>
+      <tr><td>FEATURED ELIGIBLE</td><td class="check">✓</td><td class="check">✓ (priority)</td></tr>
+      <tr><td>API USED</td><td>Stable Diffusion / DALL-E</td><td>Runway ML / Kling</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FEATURED DREAMS -->
+<section id="featured">
+  <div class="section-label">✦ Community Dreams</div>
+  <h2 class="section-title">Top <em>Visions</em> This Week</h2>
+  <div class="divider"></div>
+
+  <div class="dreams-grid" id="dreamsGrid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section id="leaderboard">
+  <div class="section-label">✦ Hall of Dreams</div>
+  <h2 class="section-title">All-Time <em>Rankings</em></h2>
+  <div class="divider"></div>
+  <div class="lb-list" id="lbList"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Dream<span>scape</span></div>
+  <p>© 2025 Dreamscape · AI-Powered Dream Cinema · All dreams belong to their dreamers</p>
+  <p style="color:rgba(226,196,255,0.15);">Built with Runway ML · Stable Diffusion · Claude AI</p>
+</footer>
+
+<script>
+// ── Cursor ──
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) *.12;
+  ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('button,a,.dream-card,.lb-item').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width = '56px'; ring.style.height = '56px'; ring.style.borderColor = 'rgba(192,132,252,0.8)'; });
+  el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; ring.style.borderColor = 'rgba(192,132,252,0.5)'; });
+});
+
+// ── Stars ──
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 180; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2.5 + 0.5;
+  s.style.cssText = `
+    width:${size}px;height:${size}px;
+    top:${Math.random()*100}%;left:${Math.random()*100}%;
+    --d:${Math.random()*4+2}s;
+    --delay:${Math.random()*4}s;
+    --min-op:${Math.random()*0.15};
+    --max-op:${Math.random()*0.7+0.2};
+  `;
+  starsEl.appendChild(s);
+}
+
+// ── Mode toggle ──
+let currentMode = 'images';
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeImages').classList.toggle('active', mode === 'images');
+  document.getElementById('modeVideo').classList.toggle('active', mode === 'video');
+  document.getElementById('infoImages').classList.toggle('active', mode === 'images');
+  document.getElementById('infoVideo').classList.toggle('active', mode === 'video');
+  document.getElementById('outputArea').classList.remove('visible');
+}
+
+// ── Dream data ──
+const sampleDreams = [
+  { id: 1, title: "The Glass City", excerpt: "A metropolis where every building was transparent, and I could see infinite reflections of myself in every direction. The sky kept cycling through all possible sunsets at once.", emoji: "🏙", votes: 2847, author: "nachtfalter", type: "video", featured: true },
+  { id: 2, title: "Falling Upward", excerpt: "Gravity reversed while I was crossing a bridge. I fell into the sky and the clouds were warm like sand.", emoji: "☁", votes: 1923, author: "somnia.ai", type: "images", featured: false },
+  { id: 3, title: "The Library of Forgotten Names", excerpt: "Every book had my handwriting but I'd never written any of them. The librarian had no face.", emoji: "📚", votes: 1541, author: "dreamer_0x", type: "video", featured: false },
+  { id: 4, title: "Ocean Made of Light", excerpt: "The sea was luminous gold and when I swam in it, I could breathe. Strange creatures made of constellations swam past me.", emoji: "🌊", votes: 1388, author: "velvet.dark", type: "images", featured: false },
+  { id: 5, title: "Train to Nowhere", excerpt: "A train that moved through tunnels painted like the insides of old masterpieces. Every passenger was someone I'd forgotten.", emoji: "🚂", votes: 1102, author: "echosleep", type: "video", featured: false },
+];
+
+// Render featured grid
+const grid = document.getElementById('dreamsGrid');
+sampleDreams.forEach((d, i) => {
+  const card = document.createElement('div');
+  card.className = `dream-card${d.featured ? ' featured-card' : ''}`;
+  card.innerHTML = `
+    <div class="card-thumb">
+      <div style="font-size:${d.featured?'72px':'48px'};z-index:1;position:relative">${d.emoji}</div>
+      <div class="card-overlay"></div>
+      <div class="card-rank">#${i+1} THIS WEEK</div>
+      <div class="card-type-badge type-${d.type === 'video' ? 'video' : 'images'}">${d.type === 'video' ? '🎬 VIDEO' : '🖼 IMAGES'}</div>
+    </div>
+    <div class="card-body">
+      <div class="card-title">${d.title}</div>
+      <div class="card-excerpt">${d.excerpt}</div>
+      <div class="card-meta">
+        <span class="card-author">by @${d.author}</span>
+        <div class="card-votes">
+          <button class="vote-btn" id="vote-${d.id}" onclick="vote(${d.id}, this)">
+            ✦ <span id="voteCount-${d.id}">${d.votes.toLocaleString()}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+// Vote function
+function vote(id, btn) {
+  const dream = sampleDreams.find(d => d.id === id);
+  dream.votes++;
+  document.getElementById(`voteCount-${id}`).textContent = dream.votes.toLocaleString();
+  btn.classList.add('voted');
+  btn.querySelector('span').textContent = dream.votes.toLocaleString();
+  updateLeaderboard();
+}
+
+// Render leaderboard
+const allTimeDreams = [
+  { pos: 1, title: "The Glass City", author: "nachtfalter", emoji: "🏙", votes: 28473 },
+  { pos: 2, title: "Ocean Made of Light", author: "velvet.dark", emoji: "🌊", votes: 19240 },
+  { pos: 3, title: "The Mirrored Forest", author: "soma.veil", emoji: "🌲", votes: 15881 },
+  { pos: 4, title: "Last Train to Memory", author: "echosleep", emoji: "🚂", votes: 12204 },
+  { pos: 5, title: "Falling Through Stars", author: "dreamer_0x", emoji: "⭐", votes: 9947 },
+];
+
+function renderLB() {
+  const lb = document.getElementById('lbList');
+  lb.innerHTML = allTimeDreams.map(d => `
+    <div class="lb-item${d.pos === 1 ? ' gold-rank' : ''}">
+      <div class="lb-pos p${d.pos}">${d.pos}</div>
+      <div class="lb-thumb">${d.emoji}</div>
+      <div class="lb-info">
+        <div class="lb-title">${d.title}</div>
+        <div class="lb-author">@${d.author}</div>
+      </div>
+      <div class="lb-score">
+        <span class="lb-votes">${d.votes.toLocaleString()}</span>
+        <span class="lb-votes-label">votes</span>
+      </div>
+    </div>
+  `).join('');
+}
+renderLB();
+
+function updateLeaderboard() { renderLB(); }
+
+// ── Generate dream ──
+const dreamFrameData = {
+  images: [
+    { emoji: "🌙", label: "SCENE 01 — OPENING" },
+    { emoji: "🏙", label: "SCENE 02 — SETTING" },
+    { emoji: "👁", label: "SCENE 03 — FOCUS" },
+    { emoji: "🌫", label: "SCENE 04 — FADE" },
+  ],
+  video: [
+    { emoji: "🎬", label: "FRAME 0:00" },
+    { emoji: "✨", label: "FRAME 0:03" },
+    { emoji: "🌀", label: "FRAME 0:07" },
+    { emoji: "🌅", label: "FRAME 0:12" },
+  ]
+};
+
+function generateDream() {
+  const input = document.getElementById('dreamInput').value.trim();
+  if (!input) {
+    document.getElementById('dreamInput').style.borderColor = 'rgba(255,80,80,0.5)';
+    document.getElementById('dreamInput').placeholder = 'Please describe your dream first…';
+    setTimeout(() => { document.getElementById('dreamInput').style.borderColor = ''; }, 2000);
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.classList.add('loading');
+  document.getElementById('outputArea').classList.remove('visible');
+
+  const duration = currentMode === 'video' ? 2800 : 1500;
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+
+    const frames = dreamFrameData[currentMode];
+    const grid = document.getElementById('framesGrid');
+    grid.innerHTML = frames.map(f => `
+      <div class="dream-frame" style="animation-delay:${Math.random()*2}s">
+        ${f.emoji}
+        <div class="frame-label">${f.label}</div>
+      </div>
+    `).join('');
+
+    const words = input.split(' ').slice(0, 4).join(' ');
+    document.getElementById('outputTitle').innerHTML = `Your Dream — <em>"${words}…"</em>`;
+    document.getElementById('outputMode').textContent = currentMode === 'video'
+      ? 'AI VIDEO · 12 SECONDS'
+      : 'AI IMAGES · 4 FRAMES';
+
+    document.getElementById('outputArea').classList.add('visible');
+  }, duration);
+}
+
+function submitToGallery() {
+  const btn = event.target;
+  btn.textContent = '✓ Submitted to Gallery!';
+  btn.style.background = 'rgba(80,200,120,0.4)';
+  btn.style.borderColor = '#80ffa0';
+  setTimeout(() => {
+    btn.textContent = '✦ Submit to Gallery';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+  }, 3000);
+}
+
+function regenerate() {
+  document.getElementById('outputArea').classList.remove('visible');
+  setTimeout(generateDream, 200);
+}
+</script>
+</body>
+</html>
